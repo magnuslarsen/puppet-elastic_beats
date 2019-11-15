@@ -1,0 +1,67 @@
+<%- |
+  Boolean               $migration,
+  Boolean               $monitor_enabled,
+  String                $http_protocol,
+  String                $kibana_url,
+  String                $name,
+  String                $output_password,
+  String                $output_type,
+  String                $output_url,
+  String                $output_username,
+  Variant[String,Undef] $monitor_password,
+  Variant[String,Undef] $monitor_url,
+  Variant[String,Undef] $monitor_username,
+| -%>
+---
+shutdown_timeout: '0'
+<% if $migration { -%>
+migration.6_to_7.enabled: true
+<% } -%>
+name: <%= $facts['fqdn'] %>
+tags: []
+fields:
+  agent.instance: <%= $name %>
+fields_under_root: true
+auditbeat:
+  config.modules:
+    enabled: true
+    path: "/etc/auditbeat/conf_<%= $name %>.d/*.yml"
+  shutdown_timeout: '0'
+  modules:
+
+output:
+  <%= $output_type %>:
+    protocol: <%= $http_protocol %>
+    hosts:
+    - <%= $output_url %>
+    username: <%= $output_username %>
+    password: <%= $output_password %>
+
+shipper: {}
+logging:
+  level: info
+  to_files: true
+  to_syslog: false
+  json: true
+  files:
+    path: '/var/log/auditbeat/auditbeat_<%= $name %>'
+    name: 'auditbeat'
+    keepfiles: '3'
+    permissions: '0644'
+runoptions: {}
+processors: []
+setup:
+  kibana:
+    protocol: <%= $http_protocol %>
+    host: <%= $kibana_url %>
+
+<% if $monitor_enabled { -%>
+xpack.monitoring:
+  enabled: true
+  elasticsearch:
+    protocol: <%= $http_protocol %>
+    hosts:
+    - <%= $monitor_url %>
+    username: <%= $monitor_username %>
+    password: <%= $monitor_password %>
+<% } -%>

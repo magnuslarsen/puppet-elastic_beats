@@ -1,0 +1,19 @@
+<%- |
+  String $beat,
+  String $name,
+| -%>
+[Unit]
+Description=<%= $beat %>
+Documentation=https://www.elastic.co/products/beats/<%= $beat %>
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Environment="BEAT_LOG_OPTS="
+Environment="BEAT_CONFIG_OPTS=-c /etc/<%= $beat %>/<%= $beat %>_<%= $name %>.yml"
+Environment="BEAT_PATH_OPTS=-path.home /usr/share/<%= $beat %> -path.config /etc/<%= $beat %> -path.data /var/lib/<%= $beat %> -path.logs /var/log/<%= $beat %>/<%= $beat %>_<%= $name %>"
+ExecStart=/usr/share/<%= $beat %>/bin/<%= $beat %> $BEAT_LOG_OPTS $BEAT_CONFIG_OPTS $BEAT_PATH_OPTS
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

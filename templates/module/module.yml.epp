@@ -1,0 +1,4 @@
+<%- |
+  Tuple $configuration,
+| -%>
+<%= $configuration.to_yaml() %>
