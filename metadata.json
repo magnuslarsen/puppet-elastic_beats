@@ -1,10 +1,10 @@
 {
   "name": "magnus-elastic_beats",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "magnus",
   "summary": "Manage and install Elastic Beats with instances",
   "license": "Apache-2.0",
-  "source": "<link to repo>",
+  "source": "https://github.com/magnuslarsen/puppet-elastic_beats",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
